@@ -3,6 +3,9 @@
  */
 package tp3_heroic_fantasy_berger;
 
+import Personnage.guerrier;
+import Personnage.magicien;
+import Personnage.personnage;
 import Armes.Arme;
 import Armes.Epee;
 import Armes.Baton;
@@ -37,6 +40,28 @@ public class TP3_Heroic_Fantasy_BERGER {
             System.out.println("Arme " + (i + 1) + ": " + arme);
         }
         
+        
+        ArrayList<personnage> perso = new ArrayList<>();
+     
+        magicien magicien1 = new magicien("Gandalf", 65, true);
+        magicien magicien2 = new magicien("Garcimore", 44, false);
+     
+        guerrier guerrier1 = new guerrier("Conan", 78, false);
+        guerrier guerrier2 = new guerrier("Lannister", 45, true);
+        
+        
+        perso.add(magicien1);
+        perso.add(magicien2);
+        perso.add(guerrier1);
+        perso.add(guerrier2);
+        
+        
+        System.out.println("Liste des personnes : ");
+        for (personnage personnage : perso) {
+            System.out.println(personnage);
+        }
     }
+    
+    
     
 }
