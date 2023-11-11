@@ -7,15 +7,19 @@ package lightoff_lucile_berger_version_console;
  *
  * @author Lucile Berger
  */
-
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import javax.swing.JLabel;
-
+import javax.swing.*;
 
 public class FenetrePrincipale extends javax.swing.JFrame {
+
     GrilledeCellules grille;
     int nbCoups;
-    
+    int i;
+
     /**
      * Creates new form FenetrePrincipale
      */
@@ -25,52 +29,158 @@ public class FenetrePrincipale extends javax.swing.JFrame {
         int nbColonnes = 7;
         this.grille = new GrilledeCellules(nbLignes, nbColonnes);
 
-        
         initialiserPartie();
         PanneauGrille.setLayout(new GridLayout(nbLignes, nbColonnes));
-        
-        for (int i=0; i < nbLignes; i++) {
-            for (int j=0; j < nbColonnes; j++ ) {
-                CelluleGraphique bouton_cellule = new CelluleGraphique( grille.matriceCellules[i][j], 36,36); 
-                PanneauGrille.add(bouton_cellule); 
+
+        for (int i = 0; i < nbLignes; i++) {
+            for (int j = 0; j < nbColonnes; j++) {
+                CelluleGraphique bouton_cellule = new CelluleGraphique(grille.matriceCellules[i][j], 36, 36);
+                PanneauGrille.add(bouton_cellule);
             }
         }
-        
-        
+
+        getContentPane().add(PanneauGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 80, nbColonnes * 40, nbLignes * 40));
+        this.pack();
+        this.revalidate();
+
+        PanneauBoutonsVerticaux.setLayout(new GridLayout(nbLignes, 1));
+        getContentPane().add(PanneauBoutonsVerticaux, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 80, 1 * 40, nbLignes * 40));
+        this.pack();
+        this.revalidate();
+
+        // création du panneau de boutons verticaux (pour les lignes)
+        for (i = 0; i < nbLignes; i++) {
+            JButton bouton_ligne = new JButton();
+            ActionListener ecouteurClick = new ActionListener() {
+                
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    grille.activerLigneDeCellules(j);
+                    repaint();
+                    if (grille.estTouteEteinte()) {
+                        new VictoireFrame();
+                        FenetrePrincipale.this.dispose();
+                        ajouterPaillettes();
+                    }
+
+                }
+            };
+            bouton_ligne.addActionListener(ecouteurClick);
+            PanneauBoutonsVerticaux.add(bouton_ligne);
+
+        }
+
+        PanneauBoutonsOri.setLayout(new GridLayout(1, nbColonnes));
+        getContentPane().add(PanneauBoutonsOri, new org.netbeans.lib.awtextra.AbsoluteConstraints(119, 35, nbLignes * 40, 1 * 40));
+        this.pack();
+        this.revalidate();
+
+        // création du panneau de boutons horizontaux (pour les colonnes)
+        for (i = 0; i < nbColonnes; i++) {
+            JButton bouton_colonnes = new JButton();
+            ActionListener ecouteurClick = new ActionListener() {
+              
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    grille.activerColonneDeCellules(j);
+                    repaint();
+                    if (grille.estTouteEteinte()) {
+                        new VictoireFrame();
+                        FenetrePrincipale.this.dispose();
+                        ajouterPaillettes();
+                    }
+                }
+            };
+            bouton_colonnes.addActionListener(ecouteurClick);
+            PanneauBoutonsOri.add(bouton_colonnes);
+        }
+
     }
-    
-    
+
     public void initialiserPartie() {
         grille.eteindreToutesLesCellules();
         grille.melangerMatriceAleatoirement(10);
-        findujeu.setVisible(false);
-        
- }
-    
-    private void finjeu (){
-        if (grille.estTouteEteinte()== true){
-            findujeu.setVisible(true);
-            jButtondm.setEnabled(false);
-            jButtondd.setEnabled(false);
-            jButton1.setEnabled(false);
-            jButton2.setEnabled(false);
-            jButton3.setEnabled(false);
-            jButton4.setEnabled(false);
-            jButton5.setEnabled(false);
-            jButton6.setEnabled(false);
-            jButton7.setEnabled(false);
-            jButton8.setEnabled(false);
-            jButton9.setEnabled(false);
-            jButton10.setEnabled(false);
-            jButton11.setEnabled(false);
-            jButton12.setEnabled(false);
-            
-        }
+
     }
 
+    public class VictoireFrame extends JFrame {
+
+        public VictoireFrame() {
+            super("Victoire !");
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setSize(300, 100);
+
+            JLabel label = new JLabel("Félicitations ! Vous avez gagné !");
+            label.setHorizontalAlignment(JLabel.CENTER);
+            getContentPane().add(label);
+
+            setLocationRelativeTo(null); 
+            setVisible(true);
     
+        }
 
+    }
 
+    import java.awt.Color ;
+    import java.awt.Font ;
+    import java.awt.GridLayout ;
+    import java.awt.event.ActionEvent ;
+    import java.awt.event.ActionListener ;
+    import javax.swing.ImageIcon ;
+    import javax.swing.JFrame ;
+    import javax.swing.JLabel ;
+    import javax.swing.JPanel ;
+    import javax.swing.Timer ;
+
+    public class VictoireFrame extends JFrame {
+
+        private JPanel paillettesPanel;
+
+        public VictoireFrame() {
+            super("Victoire !");
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            setSize(400, 200);
+            setLayout(new GridLayout(2, 1));
+
+            JLabel label = new JLabel("Félicitations ! Vous avez gagné !");
+            label.setHorizontalAlignment(JLabel.CENTER);
+            label.setFont(new Font("Arial", Font.BOLD, 20));
+
+            add(label);
+
+            paillettesPanel = new JPanel();
+            paillettesPanel.setBackground(Color.BLACK);
+            add(paillettesPanel);
+
+            setLocationRelativeTo(null);
+            setVisible(true);
+
+     
+        }
+
+        
+        // ????
+        private void ajouterPaillettes() {
+            Timer timer = new Timer(100, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JLabel paillette = new JLabel(new ImageIcon("OneDrive\\EPF\\2eme année\\CPO_TP_persos\\offimages.png"));
+                    paillettesPanel.revalidate();
+                    paillettesPanel.repaint();
+                }
+            });
+
+            timer.setRepeats(true);
+            timer.setCoalesce(true);
+            timer.start();
+        }
+
+        public static void main(String[] args) {
+            new VictoireFrame();
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -82,24 +192,11 @@ public class FenetrePrincipale extends javax.swing.JFrame {
     private void initComponents() {
 
         PanneauGrille = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
-        jButton0 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
-        jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
-        jButton11 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
-        jButton13 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        PanneauBoutonsVerticaux = new javax.swing.JPanel();
+        PanneauBoutonsOri = new javax.swing.JPanel();
         jButtondd = new javax.swing.JButton();
         jButtondm = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        findujeu = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -110,126 +207,47 @@ public class FenetrePrincipale extends javax.swing.JFrame {
         PanneauGrille.setLayout(PanneauGrilleLayout);
         PanneauGrilleLayout.setHorizontalGroup(
             PanneauGrilleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 360, Short.MAX_VALUE)
+            .addGap(0, 290, Short.MAX_VALUE)
         );
         PanneauGrilleLayout.setVerticalGroup(
             PanneauGrilleLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 360, Short.MAX_VALUE)
         );
 
-        getContentPane().add(PanneauGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 70, 360, 360));
+        getContentPane().add(PanneauGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 80, 290, 360));
 
-        jButton1.setText("L1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 130, -1, -1));
+        jLabel1.setText("\"Bienvenue dans le jeu LightOff!");
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 460, 190, -1));
 
-        jButton6.setText("L6");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 380, -1, -1));
+        PanneauBoutonsVerticaux.setBackground(new java.awt.Color(255, 204, 255));
 
-        jButton0.setText("L0");
-        jButton0.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton0ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton0, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 80, -1, -1));
+        javax.swing.GroupLayout PanneauBoutonsVerticauxLayout = new javax.swing.GroupLayout(PanneauBoutonsVerticaux);
+        PanneauBoutonsVerticaux.setLayout(PanneauBoutonsVerticauxLayout);
+        PanneauBoutonsVerticauxLayout.setHorizontalGroup(
+            PanneauBoutonsVerticauxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+        );
+        PanneauBoutonsVerticauxLayout.setVerticalGroup(
+            PanneauBoutonsVerticauxLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 360, Short.MAX_VALUE)
+        );
 
-        jButton2.setText("L2");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 180, -1, -1));
+        getContentPane().add(PanneauBoutonsVerticaux, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 80, 40, 360));
 
-        jButton3.setText("L3");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, -1, -1));
+        PanneauBoutonsOri.setBackground(new java.awt.Color(255, 204, 255));
 
-        jButton4.setText("L4");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 280, -1, -1));
+        javax.swing.GroupLayout PanneauBoutonsOriLayout = new javax.swing.GroupLayout(PanneauBoutonsOri);
+        PanneauBoutonsOri.setLayout(PanneauBoutonsOriLayout);
+        PanneauBoutonsOriLayout.setHorizontalGroup(
+            PanneauBoutonsOriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 300, Short.MAX_VALUE)
+        );
+        PanneauBoutonsOriLayout.setVerticalGroup(
+            PanneauBoutonsOriLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 40, Short.MAX_VALUE)
+        );
 
-        jButton5.setText("L5");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 330, -1, -1));
-
-        jButton7.setText("C0");
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(160, 30, 50, -1));
-
-        jButton8.setText("C1");
-        jButton8.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton8ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton8, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 30, 50, -1));
-
-        jButton9.setText("C2");
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton9, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 30, 50, -1));
-
-        jButton10.setText("C3");
-        jButton10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton10ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton10, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 30, 50, -1));
-
-        jButton11.setText("C4");
-        jButton11.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton11ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton11, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 30, 50, -1));
-
-        jButton12.setText("C5");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton12, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 30, 50, -1));
-
-        jButton13.setText("C6");
-        jButton13.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton13ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton13, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 30, 50, -1));
+        getContentPane().add(PanneauBoutonsOri, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 30, 300, 40));
 
         jButtondd.setText("DD");
         jButtondd.addActionListener(new java.awt.event.ActionListener() {
@@ -237,7 +255,7 @@ public class FenetrePrincipale extends javax.swing.JFrame {
                 jButtonddActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtondd, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 30, -1, -1));
+        getContentPane().add(jButtondd, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 40, 50, 30));
 
         jButtondm.setText("DM");
         jButtondm.addActionListener(new java.awt.event.ActionListener() {
@@ -245,101 +263,24 @@ public class FenetrePrincipale extends javax.swing.JFrame {
                 jButtondmActionPerformed(evt);
             }
         });
-        getContentPane().add(jButtondm, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 30, -1, -1));
-
-        jLabel1.setText("\"Bienvenue dans le jeu LightOff!");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 440, 190, -1));
-
-        findujeu.setText("Vous avez gagné, félicitation !!!");
-        getContentPane().add(findujeu, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 470, 210, -1));
+        getContentPane().add(jButtondm, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, 60, 30));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.grille.activerLigneDeCellules(1);
+    private void jButtondmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtondmActionPerformed
+        this.grille.activerDiagonaleMontante();
         repaint();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        FenetrePrincipale.this.dispose();
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        this.grille.activerLigneDeCellules(6);
-        repaint();
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton0ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton0ActionPerformed
-        this.grille.activerLigneDeCellules(0);
-        repaint();    }//GEN-LAST:event_jButton0ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.grille.activerLigneDeCellules(2);
-        repaint(); 
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        this.grille.activerLigneDeCellules(3);
-        repaint();
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        this.grille.activerLigneDeCellules(4);
-        repaint();
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        this.grille.activerLigneDeCellules(5);
-        repaint();
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        this.grille.activerColonneDeCellules(1);
-        repaint();
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        this.grille.activerColonneDeCellules(0);
-        repaint();
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        this.grille.activerColonneDeCellules(2);
-        repaint();
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        this.grille.activerColonneDeCellules(3);
-        repaint();
-    }//GEN-LAST:event_jButton10ActionPerformed
-
-    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        this.grille.activerColonneDeCellules(4);
-        repaint();
-    }//GEN-LAST:event_jButton11ActionPerformed
-
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        this.grille.activerColonneDeCellules(5);
-        repaint();
-    }//GEN-LAST:event_jButton12ActionPerformed
-
-    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        this.grille.activerColonneDeCellules(6);
-        repaint();
-    }//GEN-LAST:event_jButton13ActionPerformed
+    }//GEN-LAST:event_jButtondmActionPerformed
 
     private void jButtonddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonddActionPerformed
         this.grille.activerDiagonaleDescendante();
         repaint();
+        FenetrePrincipale.this.dispose();
     }//GEN-LAST:event_jButtonddActionPerformed
 
-    private void jButtondmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtondmActionPerformed
-        this.grille.activerDiagonaleMontante();
-        repaint();
-    }//GEN-LAST:event_jButtondmActionPerformed
-
-    
-    
-    
-    
-    
     /**
      * @param args the command line arguments
      */
@@ -366,6 +307,7 @@ public class FenetrePrincipale extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(FenetrePrincipale.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -375,23 +317,11 @@ public class FenetrePrincipale extends javax.swing.JFrame {
         });
     }
 
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel PanneauBoutonsOri;
+    private javax.swing.JPanel PanneauBoutonsVerticaux;
     private javax.swing.JPanel PanneauGrille;
-    private javax.swing.JLabel findujeu;
-    private javax.swing.JButton jButton0;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton10;
-    private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
-    private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
-    private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JButton jButtondd;
     private javax.swing.JButton jButtondm;
     private javax.swing.JLabel jLabel1;
