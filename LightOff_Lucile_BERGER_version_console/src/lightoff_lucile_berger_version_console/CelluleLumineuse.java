@@ -1,12 +1,11 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ * 
  */
 package lightoff_lucile_berger_version_console;
 
 /**
  *
- * @author ocean
+ * @author Lucile Berger
  */
 public class CelluleLumineuse {
     private boolean etat; 
@@ -47,6 +46,16 @@ public class CelluleLumineuse {
     public boolean getEtat() {
         return this.etat;
     }
+    
+    /**
+    * Vérifie si la cellule lumineuse est allumée.
+    *
+    * @return true si la cellule est allumée, false sinon.
+    */
+    public boolean estAllumee() {
+        return etat; 
+ 
+}
 
     /**
      * Affiche l'état de la cellule de manière lisible.
@@ -59,7 +68,18 @@ public class CelluleLumineuse {
         } else {
             return "O"; 
         }
+        
     }
 }
+
+
+        
+        
+        
+        
+        
+    
+
+   
 
 
