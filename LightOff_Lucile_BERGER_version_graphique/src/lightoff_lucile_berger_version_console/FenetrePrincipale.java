@@ -4,7 +4,6 @@
 package lightoff_lucile_berger_version_console;
 
 /**
- *
  * @author Lucile Berger
  */
 import java.awt.GridLayout;
@@ -13,6 +12,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.*;
+import java.awt.*;
 
 public class FenetrePrincipale extends javax.swing.JFrame {
 
@@ -28,6 +28,11 @@ public class FenetrePrincipale extends javax.swing.JFrame {
         int nbLignes = 7;
         int nbColonnes = 7;
         this.grille = new GrilledeCellules(nbLignes, nbColonnes);
+        
+        setTitle("Bienvenue dans le jeu LightOff!");   
+        setLocationRelativeTo(null);
+        setSize(800, 700);
+        setBackground(Color.BLACK);
 
         initialiserPartie();
         PanneauGrille.setLayout(new GridLayout(nbLignes, nbColonnes));
@@ -50,18 +55,18 @@ public class FenetrePrincipale extends javax.swing.JFrame {
 
         // création du panneau de boutons verticaux (pour les lignes)
         for (i = 0; i < nbLignes; i++) {
+            final int ligne = i;
             JButton bouton_ligne = new JButton();
             ActionListener ecouteurClick = new ActionListener() {
-                
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    grille.activerLigneDeCellules(j);
+                    grille.activerLigneDeCellules(ligne);
                     repaint();
                     if (grille.estTouteEteinte()) {
                         new VictoireFrame();
                         FenetrePrincipale.this.dispose();
-                        ajouterPaillettes();
+
                     }
 
                 }
@@ -78,30 +83,33 @@ public class FenetrePrincipale extends javax.swing.JFrame {
 
         // création du panneau de boutons horizontaux (pour les colonnes)
         for (i = 0; i < nbColonnes; i++) {
+            final int colonne = i;
             JButton bouton_colonnes = new JButton();
             ActionListener ecouteurClick = new ActionListener() {
-              
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    grille.activerColonneDeCellules(j);
-                    repaint();
+                    grille.activerColonneDeCellules(colonne);
+                    PanneauGrille.repaint();
                     if (grille.estTouteEteinte()) {
                         new VictoireFrame();
                         FenetrePrincipale.this.dispose();
-                        ajouterPaillettes();
+
                     }
                 }
             };
             bouton_colonnes.addActionListener(ecouteurClick);
             PanneauBoutonsOri.add(bouton_colonnes);
         }
-
+        
+        
+        
+        
     }
 
     public void initialiserPartie() {
         grille.eteindreToutesLesCellules();
-        grille.melangerMatriceAleatoirement(10);
+        grille.melangerMatriceAleatoirement(100);
 
     }
 
@@ -110,77 +118,26 @@ public class FenetrePrincipale extends javax.swing.JFrame {
         public VictoireFrame() {
             super("Victoire !");
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            setSize(300, 100);
+            setSize(400, 300);
 
             JLabel label = new JLabel("Félicitations ! Vous avez gagné !");
             label.setHorizontalAlignment(JLabel.CENTER);
+            label.setFont(new Font("Blackadder ITC", Font.ITALIC, 30)); 
+            label.setForeground(Color.ORANGE);
             getContentPane().add(label);
-
-            setLocationRelativeTo(null); 
-            setVisible(true);
+            
     
-        }
-
-    }
-
-    import java.awt.Color ;
-    import java.awt.Font ;
-    import java.awt.GridLayout ;
-    import java.awt.event.ActionEvent ;
-    import java.awt.event.ActionListener ;
-    import javax.swing.ImageIcon ;
-    import javax.swing.JFrame ;
-    import javax.swing.JLabel ;
-    import javax.swing.JPanel ;
-    import javax.swing.Timer ;
-
-    public class VictoireFrame extends JFrame {
-
-        private JPanel paillettesPanel;
-
-        public VictoireFrame() {
-            super("Victoire !");
-            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            setSize(400, 200);
-            setLayout(new GridLayout(2, 1));
-
-            JLabel label = new JLabel("Félicitations ! Vous avez gagné !");
-            label.setHorizontalAlignment(JLabel.CENTER);
-            label.setFont(new Font("Arial", Font.BOLD, 20));
-
-            add(label);
-
-            paillettesPanel = new JPanel();
-            paillettesPanel.setBackground(Color.BLACK);
-            add(paillettesPanel);
 
             setLocationRelativeTo(null);
             setVisible(true);
 
-     
         }
-
         
-        // ????
-        private void ajouterPaillettes() {
-            Timer timer = new Timer(100, new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JLabel paillette = new JLabel(new ImageIcon("OneDrive\\EPF\\2eme année\\CPO_TP_persos\\offimages.png"));
-                    paillettesPanel.revalidate();
-                    paillettesPanel.repaint();
-                }
-            });
-
-            timer.setRepeats(true);
-            timer.setCoalesce(true);
-            timer.start();
-        }
-
-        public static void main(String[] args) {
-            new VictoireFrame();
-        }
     }
+    
+
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -201,7 +158,7 @@ public class FenetrePrincipale extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        PanneauGrille.setBackground(new java.awt.Color(255, 153, 204));
+        PanneauGrille.setBackground(new java.awt.Color(204, 204, 255));
 
         javax.swing.GroupLayout PanneauGrilleLayout = new javax.swing.GroupLayout(PanneauGrille);
         PanneauGrille.setLayout(PanneauGrilleLayout);
@@ -215,11 +172,9 @@ public class FenetrePrincipale extends javax.swing.JFrame {
         );
 
         getContentPane().add(PanneauGrille, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 80, 290, 360));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 450, 190, -1));
 
-        jLabel1.setText("\"Bienvenue dans le jeu LightOff!");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 460, 190, -1));
-
-        PanneauBoutonsVerticaux.setBackground(new java.awt.Color(255, 204, 255));
+        PanneauBoutonsVerticaux.setBackground(new java.awt.Color(153, 204, 255));
 
         javax.swing.GroupLayout PanneauBoutonsVerticauxLayout = new javax.swing.GroupLayout(PanneauBoutonsVerticaux);
         PanneauBoutonsVerticaux.setLayout(PanneauBoutonsVerticauxLayout);
@@ -234,7 +189,7 @@ public class FenetrePrincipale extends javax.swing.JFrame {
 
         getContentPane().add(PanneauBoutonsVerticaux, new org.netbeans.lib.awtextra.AbsoluteConstraints(75, 80, 40, 360));
 
-        PanneauBoutonsOri.setBackground(new java.awt.Color(255, 204, 255));
+        PanneauBoutonsOri.setBackground(new java.awt.Color(153, 204, 255));
 
         javax.swing.GroupLayout PanneauBoutonsOriLayout = new javax.swing.GroupLayout(PanneauBoutonsOri);
         PanneauBoutonsOri.setLayout(PanneauBoutonsOriLayout);
@@ -271,14 +226,20 @@ public class FenetrePrincipale extends javax.swing.JFrame {
     private void jButtondmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtondmActionPerformed
         this.grille.activerDiagonaleMontante();
         repaint();
-        FenetrePrincipale.this.dispose();
+        if (grille.estTouteEteinte()) {
+            new VictoireFrame();
+            FenetrePrincipale.this.dispose();
+        }
 
     }//GEN-LAST:event_jButtondmActionPerformed
 
     private void jButtonddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonddActionPerformed
         this.grille.activerDiagonaleDescendante();
         repaint();
-        FenetrePrincipale.this.dispose();
+        if (grille.estTouteEteinte()) {
+            new VictoireFrame();
+            FenetrePrincipale.this.dispose();
+        }
     }//GEN-LAST:event_jButtonddActionPerformed
 
     /**
